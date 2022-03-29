@@ -16,7 +16,7 @@ var numberLineRange = numberLineMax-numberLineMin;
 var numberLineMag;
 var numberLineRoundingFactor;
 var numberLineMajorFreq = 10;
-var numberLineMinorFreq = 5;
+var numberLineMinorFreq = 2;
 
 var numberLineCentre;
 var numberLineWidth;
@@ -84,11 +84,10 @@ function defineNumberLine() {
 }
 
 function drawNumberLine() {
+    // Extremeties lines and whiskers
     ctx.beginPath();
-    // Line
     ctx.moveTo(numberLineStart, numberLineYPos);
     ctx.lineTo(numberLineEnd, numberLineYPos);
-    // Extremeties
     ctx.moveTo(numberLineStart, numberLineYPos-20);
     ctx.lineTo(numberLineStart, numberLineYPos);
     ctx.moveTo(numberLineEnd, numberLineYPos-20);
@@ -104,19 +103,19 @@ function drawNumberLine() {
     
     // Extremety text
     ctx.font = "12px Arial";
-    ctx.fillText(Math.round(numberLineMin/numberLineRoundingFactor)*numberLineRoundingFactor, numberLineStart, canvasHeight-numberLineYPos+30);
-    ctx.fillText(Math.round(numberLineMax/numberLineRoundingFactor)*numberLineRoundingFactor, numberLineEnd, canvasHeight-numberLineYPos+30);
+    ctx.fillText(Math.round(numberLineMin/numberLineRoundingFactor)*numberLineRoundingFactor, numberLineStart, canvasHeight-numberLineYPos+28);
+    ctx.fillText(Math.round(numberLineMax/numberLineRoundingFactor)*numberLineRoundingFactor, numberLineEnd, canvasHeight-numberLineYPos+28);
     
     // Major whiskers and text
     ctx.font = "10px Arial";
-    for (let i = 1; i < numberLineMajorFreq; i++) {
-        let num = lerp(numberLineMin, numberLineMax, i/numberLineMajorFreq);
-        let pos = lerp(numberLineStart, numberLineEnd, inverseLerp(numberLineMin, numberLineMax, num));
-        ctx.fillText(parseFloat((Math.round(num/numberLineRoundingFactor)*numberLineRoundingFactor).toFixed(6)), pos, canvasHeight-numberLineYPos+20);
+    for (let m = 1; m <= numberLineMajorFreq; m++) {
+        let majorNum = lerp(numberLineMin, numberLineMax, m/(numberLineMajorFreq+1));
+        let majorPos = lerp(numberLineStart, numberLineEnd, inverseLerp(numberLineMin, numberLineMax, majorNum));
         ctx.beginPath();
-        ctx.moveTo(pos, canvasHeight-numberLineYPos);
-        ctx.lineTo(pos, canvasHeight-numberLineYPos+10);
+        ctx.moveTo(majorPos, canvasHeight-numberLineYPos);
+        ctx.lineTo(majorPos, canvasHeight-numberLineYPos+14);
         ctx.stroke();
+        ctx.fillText(parseFloat((Math.round(majorNum/numberLineRoundingFactor)*numberLineRoundingFactor).toFixed(6)), majorPos, canvasHeight-numberLineYPos+20);
     }
 
     ctx.translate(0, canvasHeight);
